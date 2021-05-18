@@ -13,18 +13,45 @@ class Board:
 
     def create_board(self):
         #This function creates an empty board by adding key:value pairs to the self.board dictionary.
-        #The keys are tuples of the (row, column) coordinates, and the values will be the number at that coordinate, currently set to None.    
+        #The keys are tuples of the (row, column, section) coordinates, and the values will be the number at that coordinate, currently set to None.
+        #The section is determined by checking the row and column using if statements, to see what three by three section they fit into.    
         row = 1
         column = 1
+        section = 1
+
         while (row <= 9):
-            self.board[(row, column)] = None
+            
+            if row in range(1, 4):
+                if column in range(1, 4):
+                    section = 1
+                if column in range(4, 7):
+                    section = 2
+                if column in range(7, 10):
+                    section = 3
+            if row in range(4, 7):
+                if column in range(1, 4):
+                    section = 4
+                if column in range(4, 7):
+                    section = 5
+                if column in range(7, 10):
+                    section = 6
+            if row in range(7, 10):
+                if column in range(1, 4):
+                    section = 7
+                if column in range(4, 7):
+                    section = 8
+                if column in range(7, 10):
+                    section = 9
+
+
+            self.board[(row, column, section)] = None
             if column == 9:
                 column = 1
                 row += 1
             else:
                 column += 1
-                
 
+                
     def generate_sublists(self):
         #This function adds key:value pairs to the self.row_list dictionary.
         #The keys are the numbers 1 through 9, and each key has a value that is a list of digits from 1 to 9.
@@ -37,16 +64,7 @@ class Board:
                 self.row_list[key_pointer].append(i)
             key_pointer += 1
         self.column_list = self.row_list
-        self.three_by_three_list = self.row_list
-
-
-
-        #for row, column in self.board:
-            #if (row >= 1 and row <= 3) and (column >= 1 and column <= 3):
-                #pass
-                
-
-
+        self.three_by_three_list = self.row_list                
 
 
     def populate_board(self, difficulty):
@@ -58,4 +76,4 @@ test_board = Board('hard')
 test_board.create_board()
 test_board.generate_sublists()
 
-#print(test_board)
+print(test_board)
