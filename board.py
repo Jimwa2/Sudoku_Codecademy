@@ -1,3 +1,5 @@
+import random
+
 class Board:
     def __init__(self, difficulty):
         self.difficulty = difficulty
@@ -67,13 +69,35 @@ class Board:
         self.three_by_three_list = self.row_list                
 
 
-    def populate_board(self, difficulty):
-        pass
+    def populate_board(self):
+        for coordinate in self.board:
+            possible_value = 0
+            invalid_values = []
+            while True:
+                possible_value = random.choice(self.three_by_three_list[coordinate[2]])
+                print("three_by_three_list = " + str(self.three_by_three_list[coordinate[2]]))
+                print("row_list = " + str(self.row_list[coordinate[0]]))
+                print("column_list = " + str(self.column_list[coordinate[1]]))
+                print("possible_value = " + str(possible_value))
+                print("invalid_values = " + str(invalid_values))
+                if possible_value not in invalid_values:
+                    if possible_value in self.row_list[coordinate[0]] and self.column_list[coordinate[1]]:
+                        self.board[coordinate] = possible_value
+                        self.three_by_three_list[coordinate[2]].remove(possible_value)
+                        print("possible_value = " + str(possible_value))
+                        self.row_list[coordinate[0]].remove(possible_value)
+                        self.column_list[coordinate[1]].remove(possible_value)
+                        break
+                else:
+                    invalid_values.append(possible_choice)
+
+                
 
 
 
 test_board = Board('hard')
 test_board.create_board()
 test_board.generate_sublists()
+test_board.populate_board()
 
 print(test_board)
