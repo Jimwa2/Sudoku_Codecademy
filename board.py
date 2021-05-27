@@ -10,7 +10,7 @@ class Board:
         self.poss_choices_row = {}
         self.poss_choices_column = {}
         self.poss_choices_three_by_three = {}
-        self.failed_coordinates = []
+        self.failed_coordinates = {}
 
 
     def __repr__(self):
@@ -101,6 +101,17 @@ class Board:
         print(coordinate, "set to: None")
 
 
+    def swap_coordinate_values(self, coordinate, other_coord):
+        coordinate_value = self.board[coordinate]
+        other_coord_value = self.board[other_coord]
+
+        self.remove_choice_from_coordinate(coordinate)
+        self.add_choice_to_coordinate(coordinate, other_coord_value)
+
+        self.remove_choice_from_coordinate(other_coord)
+        self.add_choice_to_coordinate(other_coord, coordinate_value)
+
+
     def look_for_possible_swap(self, coordinate):
         choice_to_be_added = 0
         poss_choices_row = self.poss_choices_row[coordinate[0]]
@@ -159,7 +170,66 @@ class Board:
 
         if not choice_to_be_added:
             print("No valid choice found for coordinate:", coordinate)
-            self.failed_coordinates.append(coordinate)
+            self.failed_coordinates[coordinate] = None
+            #for other_coord in self.three_by_three_list[coordinate[2]]:
+                #if self.board[other_coord] in 
+
+
+    def fix_failed_coordinates(self):
+
+        while self.failed_coordinates:        
+        
+            for coordinate in self.failed_coordinates:
+                self.failed_coordinates[coordinate] = [self.poss_choices_row[coordinate[0]][0], self.poss_choices_column[coordinate[1]][0], self.poss_choices_three_by_three[coordinate[2]][0]]
+
+            for coordinate in self.failed_coordinates:
+
+                #To fix coordinates which have only one possible choice in all three of their poss_choice lists.
+                if len(set(self.failed_coordinates[coordinate])) == 1:
+                    self.add_choice_to_coordinate(coordinate, self.failed_coordinates[coordinate][0])
+                    del self.failed_coordinates[coordinate]
+                    break          
+
+                #
+                if len(set(self.failed_coordinates[coordinate])) == 2:
+                    #Find out which number is an option for two sublists...
+                    counter_dict = {}
+                    for num in self.failed_coordinates[coordinate]:
+                        if num not in counter_dict:
+                            counter_dict[num] = 1
+                        else:
+                            counter_dict[num] += 1
+                    higher_count = max([(value, key) for key, value in counter_dict.items()])[1]
+                    lower_count = min([(value, key) for key, value in counter_dict.items()])[1]
+                    #...and which sublist does not have that number (row, column, or three_by_three).
+                    sublist_to_change = self.failed_coordinates[coordinate].index(lower_count)
+                    #change_queue = [coordinate, sublist_to_change]
+                    #del self.failed_coordinates[coordinate]
+
+                    for other_coord in self.failed_coordinates:
+                        if self.failed_coordinates[other_coord][sublist_to_change] == higher_count:
+                            if sublist_to_change == 0:
+                                self.poss_choices_row[coordinate[0]] = [higher_count]
+                                self.poss_choices_row[other_coord[0]] = [lower_count]
+                            if sublist_to_change == 1:
+                                self.poss_choices_column[coordinate[1]] = [higher_count]
+                                self.poss_choices_column[other_coord[1]] = [lower_count]
+                            if sublist_to_change == 2:
+                                self.poss_choices_three_by_three[coordinate[2]] = [higher_count]
+                                self.poss_choices_three_by_three[other_coord[2]] = [lower_count]
+                            break
+                break
+
+
+
+
+                        
+                    
+
+
+            
+
+        
 
 
     def min_len_list_index(self, row_list, column_list, three_by_three_list):
@@ -198,9 +268,7 @@ class Board:
 
         if self.failed_coordinates:
             print("\nFixing failed coordinates:", self.failed_coordinates)
-            for failed_coordinate in self.failed_coordinates:
-                self.look_for_possible_swap(failed_coordinate)
-                self.failed_coordinates.remove(failed_coordinate)
+            self.fix_failed_coordinates()
 
 
             
