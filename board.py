@@ -221,21 +221,11 @@ class Board:
                 break
 
 
-
-
-                        
-                    
-
-
-            
-
-        
-
-
     def min_len_list_index(self, row_list, column_list, three_by_three_list):
         combined_list = [row_list, column_list, three_by_three_list]
         min_len_list = min(combined_list, key = len)
         return combined_list.index(min_len_list)
+
 
     def populate_board(self):
         for coordinate in self.board:
@@ -269,14 +259,26 @@ class Board:
         if self.failed_coordinates:
             print("\nFixing failed coordinates:", self.failed_coordinates)
             self.fix_failed_coordinates()
+       
 
+    def set_difficulty(self):
+        coords_to_remove = 0
+        to_be_removed = ()
+        list_of_coords = list(self.board.keys())
 
-            
+        if self.difficulty == 'easy':
+            coords_to_remove = 36
+        if self.difficulty == 'medium':
+            coords_to_remove = 46
+        if self.difficulty == 'hard':
+            coords_to_remove = 56
 
+        while coords_to_remove:
+            to_be_removed = random.choice(list_of_coords)
+            self.remove_choice_from_coordinate(to_be_removed)
+            list_of_coords.remove(to_be_removed)
+            coords_to_remove -= 1
 
-
-            
-                
 
 
 
@@ -285,4 +287,7 @@ test_board.create_board()
 test_board.generate_sublists()
 test_board.populate_board()
 
-print("\n", test_board)
+print(test_board.row_list)
+
+
+#print("\n", test_board)
